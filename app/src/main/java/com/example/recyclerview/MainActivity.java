@@ -4,12 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     ArrayList<ContactModel> arrContacts= new ArrayList<>();
+    RecyclerContactAdapter adapter;
+    FloatingActionButton btnOpenDialog;
+    RecyclerView recyclerView;
 
 
     @Override
@@ -18,6 +28,46 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerContact);
+        View buttonOpenDialog = findViewById(R.id.btnOpenDialog);
+
+        buttonOpenDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(MainActivity.this);
+                dialog.setContentView(R.layout.add_update_layout);
+
+                EditText editName = dialog.findViewById(R.id.editName);
+                EditText editNumber = dialog.findViewById(R.id.editNumber);
+                Button btnAction = dialog.findViewById(R.id.btnOpenDialog);
+
+                btnAction.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String name = "", number = "";
+
+                        if (!editName.getText().toString().equals("")) {
+                            name = editName.getText().toString();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Please enter Contact name!", Toast.LENGTH_SHORT).show();
+                        }
+                        if (!editNumber.getText().toString().equals("")) {
+                            number = editNumber.getText().toString();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Please enter Contact number!", Toast.LENGTH_SHORT).show();
+                        }
+                        arrContacts.add(new ContactModel(name, number));
+
+                        adapter.notifyItemInserted(arrContacts.size() - 1);
+                        recyclerView.scrollToPosition(arrContacts.size() - 1);
+
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }
+        });
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         arrContacts.add(new ContactModel(R.drawable.a, "Ali","03465629858"));

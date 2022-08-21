@@ -10,4 +10,9 @@ public class ContactModel {
         this.image=image;
 
     }
+
+    public ContactModel(String name, String number){
+        this.name = name;
+        this.number = number;
+    }
 }
